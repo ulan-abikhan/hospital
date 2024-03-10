@@ -21,4 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('sign-up', [UserController::class, 'store']);
 
-Route::post('send-message', [UserController::class, 'sendMail']);
+// Route::post('send-message', [UserController::class, 'sendMail']);

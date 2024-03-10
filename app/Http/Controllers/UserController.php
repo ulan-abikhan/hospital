@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Mail\VerificationMail;
 use App\Mail\WelcomeMail;
+use App\Models\EmailVerification;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
@@ -30,17 +33,26 @@ class UserController extends Controller
             'role'=>$request['role']
         ]);
 
+        $this->sendMail($request['first_name'], $request['email']);
+
         return response(status: 201);
     }
 
+    public function sendMail($firstName, $email) {
+        
+        $token = Str::random(50);
 
-    public function sendMail() {
-        $title = 'Welcome to the internet';
-        $body = 'Thank you dear!';
+        $emailVerification = EmailVerification::create([
+            "token"=>$token,
+            "email"=>$email
+        ]);
 
-        Mail::to('uabikhan@gmail.com')->send(new WelcomeMail($title, $body));
+        $link = URL::to('/').'/api/verify?token='.$token;
 
-        return "Email sent successfully!";
+        $dicardLink = URL::to('/').'/api/dicard?token='.$token;
+
+        Mail::to($email)->send(new VerificationMail($link, $firstName, $dicardLink));
+
     }
 
 }

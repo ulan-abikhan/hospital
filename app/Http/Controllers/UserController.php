@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
 use App\Mail\VerificationMail;
-use App\Mail\WelcomeMail;
 use App\Models\EmailVerification;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -47,12 +48,41 @@ class UserController extends Controller
             "email"=>$email
         ]);
 
-        $link = URL::to('/').'/api/verify?token='.$token;
+        $link = URL::to('/').'/api/verify-mail?token='.$token;
 
-        $dicardLink = URL::to('/').'/api/dicard?token='.$token;
+        $dicardLink = URL::to('/').'/api/dicard-mail?token='.$token;
 
         Mail::to($email)->send(new VerificationMail($link, $firstName, $dicardLink));
 
+    }
+
+    public function verify(Request $request) {
+        $token = $request['token'];
+
+        $email = EmailVerification::where('token', $token)->first();
+
+        $user = User::where('email', $email['email'])->first();
+
+        $user->email_verified_at = Carbon::now();
+
+        $user->save();
+
+        return redirect(URL::to('/'));
+
+    }
+
+    public function discard(Request $request) {
+        $token = $request['token'];
+
+        $email = EmailVerification::where('token', $token)->first();
+
+        $user = User::where('email', $email['email'])->first();
+
+        $email->delete();
+
+        $user->delete();
+
+        return redirect(URL::to('/'));
     }
 
 }

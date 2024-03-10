@@ -5,8 +5,6 @@
 </head>
 <body>
     <p>Hello {{ $name }}! Verify your via link:</p>
-    
-    <br>
 
     <a href="{{ $link }}">Click here</a>
 

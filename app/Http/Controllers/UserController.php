@@ -67,6 +67,8 @@ class UserController extends Controller
 
         $user->save();
 
+        $email->delete();
+
         return redirect(URL::to('/'));
 
     }

@@ -23,5 +23,6 @@ Route::post('sign-up', [UserController::class, 'store']);
 
 Route::get('verify-mail', [UserController::class, 'verify']);
 
+Route::get('discard-mail', [UserController::class, 'discard']);
 
 // Route::post('send-message', [UserController::class, 'sendMail']);

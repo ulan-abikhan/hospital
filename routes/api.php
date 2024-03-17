@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\LoginEmailVerifyMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,3 +29,22 @@ Route::get('verify-mail', [UserController::class, 'verify']);
 Route::get('discard-mail', [UserController::class, 'discard']);
 
 // Route::post('send-message', [UserController::class, 'sendMail']);
+    Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
+
+    // Route::post('login', 'AuthController@login');
+
+        Route::post('sign-in', [AuthController::class, 'login']);
+    // Route::post('logout', 'AuthController@logout');
+        Route::post('sign-out', [AuthController::class, 'logout']);
+    // Route::post('refresh', 'AuthController@refresh');
+        Route::post('refresh', [AuthController::class, 'refresh']);
+    // Route::post('me', 'AuthController@me');
+        Route::get('me', [AuthController::class, 'me']);
+
+    });
+
+Route::group(['middleware'=>'verified'], function() {
+    Route::group(['middleware'=>'auth:api'], function() {
+        Route::get('hospitals', [HospitalController::class, 'index']);
+    });
+});

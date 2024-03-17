@@ -29,7 +29,7 @@ class UserRequest extends FormRequest
             'middle_name'=>'max:255|alpha',
             'email'=>'required|email:rfs,dns|unique:users,email',
             'password'=>'required|min:8|max:100|string',
-            'photo'=>'image',
+            'photo'=>'image|max:1000',
             'role'=>[Rule::enum(UserRoles::class)]
         ];
     }

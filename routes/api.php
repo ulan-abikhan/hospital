@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\HospitalController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckAdmin;
 use App\Http\Middleware\LoginEmailVerifyMiddleware;
@@ -51,6 +52,9 @@ Route::group(['middleware'=>'verified'], function() {
     Route::group(['middleware'=>'auth:api'], function() {
         Route::get('hospitals', [HospitalController::class, 'index']);
         Route::get('departments', [DepartmentController::class, 'index']);
+        Route::get('departments/{department_id}/services', 
+        [ServiceController::class, 'index']);
+        Route::get('services/{id}', [ServiceController::class, 'show']);
 
         Route::group(['middleware'=>CheckAdmin::class], function() {
             Route::post('hospitals', [HospitalController::class, 'store']);
@@ -64,6 +68,10 @@ Route::group(['middleware'=>'verified'], function() {
             Route::post('doctors', [DoctorController::class, 'store']);
             Route::patch('doctors/{id}', [DoctorController::class, 'update']);
             Route::delete('doctors/{id}', [DoctorController::class, 'destroy']);
+
+            Route::post('services', [ServiceController::class, 'store']);
+            Route::patch('services/{id}', [ServiceController::class, 'update']);
+            Route::delete('services/{id}', [ServiceController::class, 'destroy']);
         });
 
     });

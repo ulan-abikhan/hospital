@@ -9,8 +9,8 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
-        $this->middleware('verified', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'me']]);
+        // $this->middleware('verified', ['except' => ['login']]);
     }
 
     /**
@@ -34,9 +34,9 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function me()
+    public function me(Request $request)
     {
-        return response()->json(auth()->user());
+        return response()->json($request->user());
     }
 
     /**

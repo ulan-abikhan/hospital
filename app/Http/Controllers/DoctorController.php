@@ -13,7 +13,7 @@ class DoctorController extends Controller
     }
 
     public function show($id) {
-        $doctor = Doctor::findOrFail($id);
+        $doctor = Doctor::with('services')->findOrFail($id);
         return response()->json($doctor);
     }
 

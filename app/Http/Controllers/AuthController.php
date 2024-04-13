@@ -9,7 +9,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'me']]);
+        $this->middleware('auth:api', ['except' => ['login', 'refresh']]);
         // $this->middleware('verified', ['except' => ['login']]);
     }
 

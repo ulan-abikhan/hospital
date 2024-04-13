@@ -15,5 +15,7 @@ class Service extends Model
         'price',
         'duration'
     ];
+
+    protected $hidden = ['pivot'];
     
 }

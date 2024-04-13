@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\DoctorServiceController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
@@ -55,6 +56,7 @@ Route::group(['middleware'=>'verified'], function() {
         Route::get('departments/{department_id}/services', 
         [ServiceController::class, 'index']);
         Route::get('services/{id}', [ServiceController::class, 'show']);
+        Route::get('doctors/{id}', [DoctorController::class, 'show']);
 
         Route::group(['middleware'=>CheckAdmin::class], function() {
             Route::post('hospitals', [HospitalController::class, 'store']);
@@ -72,6 +74,10 @@ Route::group(['middleware'=>'verified'], function() {
             Route::post('services', [ServiceController::class, 'store']);
             Route::patch('services/{id}', [ServiceController::class, 'update']);
             Route::delete('services/{id}', [ServiceController::class, 'destroy']);
+
+            Route::post('services/{service_id}/doctors', [DoctorServiceController::class, 'store']);
+            Route::delete('services/{service_id}/doctors', [DoctorServiceController::class, 'destroy']);
+
         });
 
     });

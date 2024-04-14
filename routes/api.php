@@ -5,6 +5,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\DoctorServiceController;
 use App\Http\Controllers\HospitalController;
+use App\Http\Controllers\RecordController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckAdmin;
@@ -57,6 +58,9 @@ Route::group(['middleware'=>'verified'], function() {
         [ServiceController::class, 'index']);
         Route::get('services/{id}', [ServiceController::class, 'show']);
         Route::get('doctors/{id}', [DoctorController::class, 'show']);
+        Route::get('doctors', [DoctorController::class, 'index']);
+        
+        Route::post('records', [RecordController::class, 'store']);
 
         Route::group(['middleware'=>CheckAdmin::class], function() {
             Route::post('hospitals', [HospitalController::class, 'store']);

@@ -8,12 +8,24 @@ use Illuminate\Http\Request;
 
 class DoctorController extends Controller
 {
-    public function index() {
-        return response()->json(["doctors"=>Doctor::all()]);
+    public function index(Request $request) {
+        $doctor = Doctor::select('id', 'department_id', 'job', "$request->weekday")
+        ->where('id', '>', '0');
+        if (isset($request->weekday)) {
+            $doctor = $doctor->whereNotNull($request->weekday);
+        }
+        return response()->json(["doctors"=>$doctor->paginate(15)]);
     }
 
     public function show($id) {
         $doctor = Doctor::with('services')->findOrFail($id);
+        $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        foreach ($weekdays as $weekday) {
+            if ($weekday != null) {
+                $scheduleDay = ScheduleDay::find($doctor[$weekday]);
+                $doctor[$weekday] = $scheduleDay;
+            }
+        }
         return response()->json($doctor);
     }
 
@@ -62,12 +74,18 @@ class DoctorController extends Controller
                 }
                 else {
                     $w = $request[$weekDay];
-                    $scheduleDay = ScheduleDay::create([
-                        "start"=>$w['start'],
-                        "end"=>$w['end'],
-                        "break_from"=>$w['break_from'],
-                        "break_to"=>$w['break_to']
-                    ]);
+                    $scheduleDay = 
+                    ScheduleDay::where('start', $w['start'])->where('end', $w['end'])
+                        ->where('break_from', $w['break_from'])->where('break_to', $w['break_to'])
+                        ->first();
+                    if (!isset($scheduleDay->id)) {
+                        $scheduleDay = ScheduleDay::create([
+                            "start"=>$w['start'],
+                            "end"=>$w['end'],
+                            "break_from"=>$w['break_from'],
+                            "break_to"=>$w['break_to']
+                        ]);
+                    }
 
                     $doctor[$weekDay] = $scheduleDay->id;
                 }
